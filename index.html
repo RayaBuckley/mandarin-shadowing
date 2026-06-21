@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Shadowing" />
+  <title>Mandarin Shadowing</title>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --danger: #dc2626;
+      --ok: #16a34a;
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #dbeafe, transparent 36rem), var(--bg);
+    }
+
+    .app {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      padding: 22px;
+      padding-bottom: calc(22px + env(safe-area-inset-bottom));
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .subhead {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.8);
+      color: var(--muted);
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(226,232,240,0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .prompt-card {
+      min-height: 410px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .hanzi {
+      font-size: clamp(3.8rem, 15vw, 8.2rem);
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      text-align: center;
+      margin: 22px 0 6px;
+      font-weight: 700;
+    }
+
+    .pinyin {
+      min-height: 2.6rem;
+      text-align: center;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      color: var(--primary-dark);
+      font-weight: 750;
+    }
+
+    .meaning {
+      min-height: 1.4rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .controls, .record-controls {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    button, select, input[type="range"] {
+      font: inherit;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 48px;
+      transition: transform 0.08s ease, filter 0.15s ease, opacity 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .primary { background: var(--primary); color: white; }
+    .primary:hover { filter: brightness(0.96); }
+    .secondary { background: #eef2ff; color: #3730a3; }
+    .ghost { background: #f1f5f9; color: #334155; }
+    .danger { background: #fee2e2; color: var(--danger); }
+    .recording { background: var(--danger); color: white; }
+    .success { background: #dcfce7; color: #166534; }
+
+    .settings {
+      display: grid;
+      gap: 16px;
+    }
+
+    .setting {
+      display: grid;
+      gap: 7px;
+    }
+
+    .setting label {
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: white;
+      color: var(--text);
+      min-height: 46px;
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] { width: 100%; }
+
+    .value-chip {
+      min-width: 3.2rem;
+      text-align: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 800;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .toggle-row:first-of-type { border-top: none; }
+
+    input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      accent-color: var(--primary);
+    }
+
+    .status {
+      border-radius: 16px;
+      padding: 13px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.94rem;
+      min-height: 48px;
+    }
+
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-weight: 900;
+      color: var(--danger);
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .history {
+      margin-top: 18px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+
+    .history-item span:first-child {
+      font-weight: 850;
+    }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 760px) {
+      .app { padding: 16px; }
+      header { align-items: flex-start; }
+      .grid { grid-template-columns: 1fr; }
+      .prompt-card { min-height: 360px; }
+      .controls, .record-controls { grid-template-columns: 1fr; }
+      .pill { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Mandarin Shadowing</h1>
+        <p class="subhead">Listen, repeat aloud, record yourself, then compare.</p>
+      </div>
+      <div class="pill">GitHub Pages ready</div>
+    </header>
+
+    <section class="grid">
+      <article class="card prompt-card">
+        <div>
+          <div class="label">Current prompt</div>
+          <div id="hanzi" class="hanzi">你好</div>
+          <div id="pinyin" class="pinyin">nǐ hǎo</div>
+          <div id="meaning" class="meaning">hello</div>
+        </div>
+
+        <div class="controls">
+          <button id="playBtn" class="primary">Play prompt</button>
+          <button id="slowBtn" class="secondary">Play slowly</button>
+          <button id="newBtn" class="ghost">New prompt</button>
+          <button id="revealBtn" class="ghost">Hide pinyin</button>
+        </div>
+      </article>
+
+      <aside class="card settings">
+        <div>
+          <div class="label">Settings</div>
+        </div>
+
+        <div class="setting">
+          <label for="syllableCount">Prompt length</label>
+          <select id="syllableCount">
+            <option value="1">1 syllable</option>
+            <option value="2" selected>2 syllables</option>
+            <option value="3">3 syllables</option>
+            <option value="4">4 syllables</option>
+            <option value="5">5 syllables</option>
+            <option value="6">6 syllables</option>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="mode">Prompt source</label>
+          <select id="mode">
+            <option value="phrases" selected>Real beginner phrases</option>
+            <option value="syllables">Random syllables</option>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="voiceSelect">Voice</label>
+          <select id="voiceSelect"></select>
+        </div>
+
+        <div class="setting">
+          <label for="rate">Playback speed</label>
+          <div class="range-row">
+            <input id="rate" type="range" min="0.55" max="1.15" step="0.05" value="0.85" />
+            <span id="rateValue" class="value-chip">0.85×</span>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <label for="autoPlay">Auto-play new prompts</label>
+          <input id="autoPlay" type="checkbox" checked />
+        </div>
+
+        <div class="toggle-row">
+          <label for="showMeaning">Show meaning</label>
+          <input id="showMeaning" type="checkbox" checked />
+        </div>
+      </aside>
+    </section>
+
+    <section class="card history">
+      <div class="label">Recording</div>
+      <p id="recordStatus" class="status">Press “Start recording”, repeat the prompt, then play your recording back.</p>
+      <div class="record-controls">
+        <button id="recordBtn" class="recording">Start recording</button>
+        <button id="playRecordingBtn" class="success" disabled>Play my recording</button>
+      </div>
+      <audio id="recordedAudio" controls hidden></audio>
+
+      <div class="history-list" id="historyList"></div>
+    </section>
+  </main>
+
+  <script>
+    const syllableBank = [
+      { hanzi: '妈', pinyin: 'mā', meaning: 'mother' },
+      { hanzi: '麻', pinyin: 'má', meaning: 'hemp / numb' },
+      { hanzi: '马', pinyin: 'mǎ', meaning: 'horse' },
+      { hanzi: '骂', pinyin: 'mà', meaning: 'scold' },
+      { hanzi: '你', pinyin: 'nǐ', meaning: 'you' },
+      { hanzi: '好', pinyin: 'hǎo', meaning: 'good' },
+      { hanzi: '我', pinyin: 'wǒ', meaning: 'I / me' },
+      { hanzi: '是', pinyin: 'shì', meaning: 'to be' },
+      { hanzi: '不', pinyin: 'bù', meaning: 'not' },
+      { hanzi: '他', pinyin: 'tā', meaning: 'he' },
+      { hanzi: '她', pinyin: 'tā', meaning: 'she' },
+      { hanzi: '们', pinyin: 'men', meaning: 'plural marker' },
+      { hanzi: '中', pinyin: 'zhōng', meaning: 'middle / China' },
+      { hanzi: '国', pinyin: 'guó', meaning: 'country' },
+      { hanzi: '英', pinyin: 'yīng', meaning: 'England / heroic' },
+      { hanzi: '文', pinyin: 'wén', meaning: 'language / writing' },
+      { hanzi: '学', pinyin: 'xué', meaning: 'study' },
+      { hanzi: '生', pinyin: 'shēng', meaning: 'student / life' },
+      { hanzi: '喝', pinyin: 'hē', meaning: 'drink' },
+      { hanzi: '茶', pinyin: 'chá', meaning: 'tea' },
+      { hanzi: '水', pinyin: 'shuǐ', meaning: 'water' },
+      { hanzi: '喜', pinyin: 'xǐ', meaning: 'like / joy' },
+      { hanzi: '欢', pinyin: 'huān', meaning: 'happy / like' },
+      { hanzi: '叫', pinyin: 'jiào', meaning: 'be called' },
+      { hanzi: '名', pinyin: 'míng', meaning: 'name' },
+      { hanzi: '字', pinyin: 'zì', meaning: 'character' },
+      { hanzi: '老', pinyin: 'lǎo', meaning: 'old / teacher prefix' },
+      { hanzi: '师', pinyin: 'shī', meaning: 'teacher' },
+      { hanzi: '今', pinyin: 'jīn', meaning: 'today / now' },
+      { hanzi: '天', pinyin: 'tiān', meaning: 'day / sky' },
+      { hanzi: '很', pinyin: 'hěn', meaning: 'very' },
+      { hanzi: '忙', pinyin: 'máng', meaning: 'busy' }
+    ];
+
+    const phraseBank = [
+      { hanzi: '你好', pinyin: 'nǐ hǎo', meaning: 'hello', syllables: 2 },
+      { hanzi: '我是学生', pinyin: 'wǒ shì xué sheng', meaning: 'I am a student', syllables: 4 },
+      { hanzi: '我学习中文', pinyin: 'wǒ xué xí zhōng wén', meaning: 'I study Chinese', syllables: 5 },
+      { hanzi: '我喜欢喝茶', pinyin: 'wǒ xǐ huan hē chá', meaning: 'I like drinking tea', syllables: 5 },
+      { hanzi: '我喝水', pinyin: 'wǒ hē shuǐ', meaning: 'I drink water', syllables: 3 },
+      { hanzi: '你叫什么名字', pinyin: 'nǐ jiào shén me míng zi', meaning: 'What is your name?', syllables: 6 },
+      { hanzi: '我叫安娜', pinyin: 'wǒ jiào ān nà', meaning: 'I am called Anna', syllables: 4 },
+      { hanzi: '他是老师', pinyin: 'tā shì lǎo shī', meaning: 'He is a teacher', syllables: 4 },
+      { hanzi: '今天很忙', pinyin: 'jīn tiān hěn máng', meaning: 'Today is busy', syllables: 4 },
+      { hanzi: '中文很好', pinyin: 'zhōng wén hěn hǎo', meaning: 'Chinese is very good', syllables: 4 },
+      { hanzi: '英国学生', pinyin: 'yīng guó xué sheng', meaning: 'British student', syllables: 4 },
+      { hanzi: '妈妈喝茶', pinyin: 'mā ma hē chá', meaning: 'Mum drinks tea', syllables: 4 }
+    ];
+
+    const els = {
+      hanzi: document.getElementById('hanzi'),
+      pinyin: document.getElementById('pinyin'),
+      meaning: document.getElementById('meaning'),
+      playBtn: document.getElementById('playBtn'),
+      slowBtn: document.getElementById('slowBtn'),
+      newBtn: document.getElementById('newBtn'),
+      revealBtn: document.getElementById('revealBtn'),
+      syllableCount: document.getElementById('syllableCount'),
+      mode: document.getElementById('mode'),
+      voiceSelect: document.getElementById('voiceSelect'),
+      rate: document.getElementById('rate'),
+      rateValue: document.getElementById('rateValue'),
+      autoPlay: document.getElementById('autoPlay'),
+      showMeaning: document.getElementById('showMeaning'),
+      recordBtn: document.getElementById('recordBtn'),
+      playRecordingBtn: document.getElementById('playRecordingBtn'),
+      recordedAudio: document.getElementById('recordedAudio'),
+      recordStatus: document.getElementById('recordStatus'),
+      historyList: document.getElementById('historyList')
+    };
+
+    let currentPrompt = phraseBank[0];
+    let showPinyin = true;
+    let voices = [];
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordingUrl = null;
+    let recordingStart = 0;
+    let timerInterval = null;
+
+    function randInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    function shuffle(array) {
+      const copy = array.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = randInt(i + 1);
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function pickPrompt() {
+      const targetCount = Number(els.syllableCount.value);
+
+      if (els.mode.value === 'phrases') {
+        const exact = phraseBank.filter(item => item.syllables === targetCount);
+        const shorter = phraseBank.filter(item => item.syllables <= targetCount);
+        const pool = exact.length ? exact : shorter.length ? shorter : phraseBank;
+        return pool[randInt(pool.length)];
+      }
+
+      const chosen = shuffle(syllableBank).slice(0, targetCount);
+      return {
+        hanzi: chosen.map(x => x.hanzi).join(''),
+        pinyin: chosen.map(x => x.pinyin).join(' '),
+        meaning: 'random syllable sequence',
+        syllables: targetCount
+      };
+    }
+
+    function renderPrompt() {
+      els.hanzi.textContent = currentPrompt.hanzi;
+      els.pinyin.textContent = showPinyin ? currentPrompt.pinyin : '••••';
+      els.meaning.textContent = els.showMeaning.checked ? currentPrompt.meaning : '';
+      els.revealBtn.textContent = showPinyin ? 'Hide pinyin' : 'Show pinyin';
+    }
+
+    function newPrompt() {
+      currentPrompt = pickPrompt();
+      renderPrompt();
+
+      if (els.autoPlay.checked) {
+        window.setTimeout(() => speak(false), 150);
+      }
+    }
+
+    function loadVoices() {
+      voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+      const zhVoices = voices.filter(v =>
+        /^zh/i.test(v.lang) ||
+        /chinese|mandarin|ting-ting|mei-jia|sin-ji/i.test(v.name)
+      );
+
+      const usable = zhVoices.length ? zhVoices : voices;
+
+      els.voiceSelect.innerHTML = '';
+
+      usable.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.value = voice.name;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        els.voiceSelect.appendChild(option);
+        if (index === 0) option.selected = true;
+      });
+
+      if (!usable.length) {
+        const option = document.createElement('option');
+        option.textContent = 'Default system voice';
+        option.value = '';
+        els.voiceSelect.appendChild(option);
+      }
+    }
+
+    function selectedVoice() {
+      return voices.find(v => v.name === els.voiceSelect.value) ||
+             voices.find(v => /^zh/i.test(v.lang)) ||
+             null;
+    }
+
+    function speak(slow) {
+      if (!('speechSynthesis' in window)) {
+        els.recordStatus.textContent = 'This browser does not support text-to-speech. Try Safari, Chrome, or Edge.';
+        return;
+      }
+
+      speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(currentPrompt.hanzi);
+      utterance.lang = 'zh-CN';
+      utterance.rate = slow ? 0.55 : Number(els.rate.value);
+      utterance.pitch = 1;
+      utterance.voice = selectedVoice();
+
+      speechSynthesis.speak(utterance);
+    }
+
+    function updateRecordingTimer() {
+      const elapsed = Math.floor((Date.now() - recordingStart) / 1000);
+      els.recordStatus.innerHTML = `Recording... <span class="timer">${elapsed}s</span>`;
+    }
+
+    function explainRecordingError(error) {
+      if (!window.isSecureContext) {
+        return 'Microphone recording requires HTTPS or localhost. GitHub Pages should work because it uses HTTPS.';
+      }
+
+      if (error && error.name === 'NotAllowedError') {
+        return 'Microphone permission was denied. Check this site’s microphone permission in your browser settings.';
+      }
+
+      if (error && error.name === 'NotFoundError') {
+        return 'No microphone was found on this device.';
+      }
+
+      if (error && error.name === 'NotReadableError') {
+        return 'The microphone is already in use by another app or browser tab.';
+      }
+
+      return 'Microphone permission was blocked or unavailable.';
+    }
+
+    async function startRecording() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        els.recordStatus.textContent = 'Microphone recording is not supported in this browser.';
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recordedChunks = [];
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) recordedChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          stream.getTracks().forEach(track => track.stop());
+
+          const blob = new Blob(recordedChunks, {
+            type: mediaRecorder.mimeType || 'audio/webm'
+          });
+
+          if (recordingUrl) URL.revokeObjectURL(recordingUrl);
+
+          recordingUrl = URL.createObjectURL(blob);
+          els.recordedAudio.src = recordingUrl;
+          els.recordedAudio.hidden = false;
+          els.playRecordingBtn.disabled = false;
+          els.recordBtn.textContent = 'Start recording';
+          els.recordBtn.className = 'recording';
+
+          clearInterval(timerInterval);
+
+          els.recordStatus.textContent =
+            `Saved recording for: ${currentPrompt.hanzi} (${currentPrompt.pinyin})`;
+
+          addHistoryItem(currentPrompt);
+        };
+
+        mediaRecorder.start();
+
+        recordingStart = Date.now();
+        timerInterval = setInterval(updateRecordingTimer, 250);
+        updateRecordingTimer();
+
+        els.recordBtn.textContent = 'Stop recording';
+        els.recordBtn.className = 'danger';
+        els.playRecordingBtn.disabled = true;
+      } catch (error) {
+        els.recordStatus.textContent = explainRecordingError(error);
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+    }
+
+    function addHistoryItem(prompt) {
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `<span>${prompt.hanzi}</span><span class="muted">${prompt.pinyin}</span>`;
+      els.historyList.prepend(item);
+
+      while (els.historyList.children.length > 5) {
+        els.historyList.removeChild(els.historyList.lastChild);
+      }
+    }
+
+    els.playBtn.addEventListener('click', () => speak(false));
+    els.slowBtn.addEventListener('click', () => speak(true));
+    els.newBtn.addEventListener('click', newPrompt);
+
+    els.revealBtn.addEventListener('click', () => {
+      showPinyin = !showPinyin;
+      renderPrompt();
+    });
+
+    els.syllableCount.addEventListener('change', newPrompt);
+    els.mode.addEventListener('change', newPrompt);
+    els.showMeaning.addEventListener('change', renderPrompt);
+
+    els.rate.addEventListener('input', () => {
+      els.rateValue.textContent = `${Number(els.rate.value).toFixed(2)}×`;
+    });
+
+    els.recordBtn.addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    });
+
+    els.playRecordingBtn.addEventListener('click', () => {
+      els.recordedAudio.currentTime = 0;
+      els.recordedAudio.play();
+    });
+
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    if (!window.isSecureContext) {
+      els.recordStatus.textContent =
+        'Recording needs HTTPS or localhost. It may not work if this file is opened directly.';
+    }
+
+    renderPrompt();
+  </script>
+</body>
+</html>

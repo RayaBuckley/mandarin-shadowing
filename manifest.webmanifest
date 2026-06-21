@@ -1,0 +1,19 @@
+{
+  "name": "Mandarin Shadowing",
+  "short_name": "Shadowing",
+  "description": "A Mandarin shadowing practice app for listening, repeating, recording, and playback.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

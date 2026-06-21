@@ -3,11 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Mandarin Shadowing</title>
+
   <meta name="theme-color" content="#2563eb" />
+  <meta name="description" content="A Mandarin shadowing practice app for listening, repeating, recording, and playback." />
+
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Shadowing" />
-  <title>Mandarin Shadowing</title>
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
 
   <style>
     :root {
@@ -24,7 +32,9 @@
       --radius: 22px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -64,7 +74,7 @@
 
     .pill {
       border: 1px solid var(--line);
-      background: rgba(255,255,255,0.8);
+      background: rgba(255, 255, 255, 0.8);
       color: var(--muted);
       padding: 9px 12px;
       border-radius: 999px;
@@ -79,9 +89,9 @@
     }
 
     .card {
-      background: rgba(255,255,255,0.92);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(226,232,240,0.9);
+      border: 1px solid rgba(226, 232, 240, 0.9);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 20px;
@@ -127,13 +137,16 @@
       font-size: 1rem;
     }
 
-    .controls, .record-controls {
+    .controls,
+    .record-controls {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
 
-    button, select, input[type="range"] {
+    button,
+    select,
+    input[type="range"] {
       font: inherit;
     }
 
@@ -148,16 +161,48 @@
       touch-action: manipulation;
     }
 
-    button:active { transform: scale(0.98); }
-    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    button:active {
+      transform: scale(0.98);
+    }
 
-    .primary { background: var(--primary); color: white; }
-    .primary:hover { filter: brightness(0.96); }
-    .secondary { background: #eef2ff; color: #3730a3; }
-    .ghost { background: #f1f5f9; color: #334155; }
-    .danger { background: #fee2e2; color: var(--danger); }
-    .recording { background: var(--danger); color: white; }
-    .success { background: #dcfce7; color: #166534; }
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .primary:hover {
+      filter: brightness(0.96);
+    }
+
+    .secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .ghost {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .recording {
+      background: var(--danger);
+      color: white;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
 
     .settings {
       display: grid;
@@ -191,7 +236,9 @@
       gap: 10px;
     }
 
-    input[type="range"] { width: 100%; }
+    input[type="range"] {
+      width: 100%;
+    }
 
     .value-chip {
       min-width: 3.2rem;
@@ -212,7 +259,9 @@
       border-top: 1px solid var(--line);
     }
 
-    .toggle-row:first-of-type { border-top: none; }
+    .toggle-row:first-of-type {
+      border-top: none;
+    }
 
     input[type="checkbox"] {
       width: 24px;
@@ -267,15 +316,35 @@
       font-weight: 850;
     }
 
-    .muted { color: var(--muted); }
+    .muted {
+      color: var(--muted);
+    }
 
     @media (max-width: 760px) {
-      .app { padding: 16px; }
-      header { align-items: flex-start; }
-      .grid { grid-template-columns: 1fr; }
-      .prompt-card { min-height: 360px; }
-      .controls, .record-controls { grid-template-columns: 1fr; }
-      .pill { display: none; }
+      .app {
+        padding: 16px;
+      }
+
+      header {
+        align-items: flex-start;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prompt-card {
+        min-height: 360px;
+      }
+
+      .controls,
+      .record-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .pill {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -287,7 +356,7 @@
         <h1>Mandarin Shadowing</h1>
         <p class="subhead">Listen, repeat aloud, record yourself, then compare.</p>
       </div>
-      <div class="pill">GitHub Pages ready</div>
+      <div class="pill">PWA ready</div>
     </header>
 
     <section class="grid">
@@ -360,10 +429,12 @@
     <section class="card history">
       <div class="label">Recording</div>
       <p id="recordStatus" class="status">Press “Start recording”, repeat the prompt, then play your recording back.</p>
+
       <div class="record-controls">
         <button id="recordBtn" class="recording">Start recording</button>
         <button id="playRecordingBtn" class="success" disabled>Play my recording</button>
       </div>
+
       <audio id="recordedAudio" controls hidden></audio>
 
       <div class="history-list" id="historyList"></div>
@@ -458,10 +529,12 @@
 
     function shuffle(array) {
       const copy = array.slice();
+
       for (let i = copy.length - 1; i > 0; i--) {
         const j = randInt(i + 1);
         [copy[i], copy[j]] = [copy[j], copy[i]];
       }
+
       return copy;
     }
 
@@ -472,13 +545,15 @@
         const exact = phraseBank.filter(item => item.syllables === targetCount);
         const shorter = phraseBank.filter(item => item.syllables <= targetCount);
         const pool = exact.length ? exact : shorter.length ? shorter : phraseBank;
+
         return pool[randInt(pool.length)];
       }
 
       const chosen = shuffle(syllableBank).slice(0, targetCount);
+
       return {
-        hanzi: chosen.map(x => x.hanzi).join(''),
-        pinyin: chosen.map(x => x.pinyin).join(' '),
+        hanzi: chosen.map(item => item.hanzi).join(''),
+        pinyin: chosen.map(item => item.pinyin).join(' '),
         meaning: 'random syllable sequence',
         syllables: targetCount
       };
@@ -501,10 +576,13 @@
     }
 
     function loadVoices() {
-      voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-      const zhVoices = voices.filter(v =>
-        /^zh/i.test(v.lang) ||
-        /chinese|mandarin|ting-ting|mei-jia|sin-ji/i.test(v.name)
+      if (!window.speechSynthesis) return;
+
+      voices = speechSynthesis.getVoices();
+
+      const zhVoices = voices.filter(voice =>
+        /^zh/i.test(voice.lang) ||
+        /chinese|mandarin|ting-ting|mei-jia|sin-ji/i.test(voice.name)
       );
 
       const usable = zhVoices.length ? zhVoices : voices;
@@ -516,7 +594,10 @@
         option.value = voice.name;
         option.textContent = `${voice.name} (${voice.lang})`;
         els.voiceSelect.appendChild(option);
-        if (index === 0) option.selected = true;
+
+        if (index === 0) {
+          option.selected = true;
+        }
       });
 
       if (!usable.length) {
@@ -528,9 +609,9 @@
     }
 
     function selectedVoice() {
-      return voices.find(v => v.name === els.voiceSelect.value) ||
-             voices.find(v => /^zh/i.test(v.lang)) ||
-             null;
+      return voices.find(voice => voice.name === els.voiceSelect.value) ||
+        voices.find(voice => /^zh/i.test(voice.lang)) ||
+        null;
     }
 
     function speak(slow) {
@@ -588,7 +669,9 @@
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.ondataavailable = event => {
-          if (event.data.size > 0) recordedChunks.push(event.data);
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
         };
 
         mediaRecorder.onstop = () => {
@@ -598,7 +681,9 @@
             type: mediaRecorder.mimeType || 'audio/webm'
           });
 
-          if (recordingUrl) URL.revokeObjectURL(recordingUrl);
+          if (recordingUrl) {
+            URL.revokeObjectURL(recordingUrl);
+          }
 
           recordingUrl = URL.createObjectURL(blob);
           els.recordedAudio.src = recordingUrl;
@@ -684,6 +769,12 @@
     if (!window.isSecureContext) {
       els.recordStatus.textContent =
         'Recording needs HTTPS or localhost. It may not work if this file is opened directly.';
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
     }
 
     renderPrompt();

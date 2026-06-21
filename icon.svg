@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#2563eb"/>
+  <circle cx="256" cy="256" r="176" fill="#ffffff" opacity="0.16"/>
+  <path d="M164 260c0-50 41-91 92-91s92 41 92 91-41 91-92 91-92-41-92-91z" fill="#ffffff"/>
+  <path d="M222 221h68v32h-68zM222 269h68v32h-68z" fill="#2563eb"/>
+  <path d="M152 188c-24 35-38 79-38 126h38c0-39 12-75 32-104zM360 188l-32 22c20 29 32 65 32 104h38c0-47-14-91-38-126z" fill="#ffffff" opacity="0.92"/>
+  <text x="256" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#ffffff">影</text>
+</svg>

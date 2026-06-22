@@ -458,7 +458,7 @@
         <div>
           <div class="label">Shadowing loop</div>
           <p id="recordStatus" class="status">
-            Press <strong>Start comparison</strong> to hear the prompt, record yourself, hear your recording, then hear the prompt again.
+            Press <strong>Start comparison</strong> to hear the prompt, immediately record yourself for the same duration, hear your recording, then hear the prompt again.
           </p>
 
           <div class="stage">
@@ -545,18 +545,10 @@
         </div>
 
         <div class="setting">
-          <label for="recordSeconds">Recording length</label>
+          <label for="recordSeconds">Manual recording length</label>
           <div class="range-row">
             <input id="recordSeconds" type="range" min="2" max="10" step="1" value="4" />
             <span id="recordSecondsValue" class="value-chip">4s</span>
-          </div>
-        </div>
-
-        <div class="setting">
-          <label for="pauseSeconds">Pause before recording</label>
-          <div class="range-row">
-            <input id="pauseSeconds" type="range" min="0" max="3" step="0.5" value="0.5" />
-            <span id="pauseSecondsValue" class="value-chip">0.5s</span>
           </div>
         </div>
       </aside>
@@ -632,8 +624,6 @@
       autoComparison: document.getElementById('autoComparison'),
       recordSeconds: document.getElementById('recordSeconds'),
       recordSecondsValue: document.getElementById('recordSecondsValue'),
-      pauseSeconds: document.getElementById('pauseSeconds'),
-      pauseSecondsValue: document.getElementById('pauseSecondsValue'),
       recordBtn: document.getElementById('recordBtn'),
       autoCompareBtn: document.getElementById('autoCompareBtn'),
       playRecordingBtn: document.getElementById('playRecordingBtn'),
@@ -781,7 +771,7 @@
       return new Promise(resolve => {
         if (!('speechSynthesis' in window)) {
           els.recordStatus.textContent = 'This browser does not support text-to-speech. Try Safari, Chrome, or Edge.';
-          resolve();
+          resolve(0);
           return;
         }
 
@@ -793,12 +783,22 @@
         utterance.pitch = 1;
         utterance.voice = selectedVoice();
 
+        const startedAt = performance.now();
         let resolved = false;
+
+        const fallbackMs = Math.max(1200, currentPrompt.syllables * 850);
 
         const finish = () => {
           if (resolved) return;
           resolved = true;
-          resolve();
+
+          const measuredMs = performance.now() - startedAt;
+
+          if (measuredMs > 250) {
+            resolve(measuredMs);
+          } else {
+            resolve(fallbackMs);
+          }
         };
 
         utterance.onend = finish;
@@ -806,14 +806,8 @@
 
         speechSynthesis.speak(utterance);
 
-        window.setTimeout(finish, Math.max(2500, currentPrompt.syllables * 1200));
+        window.setTimeout(finish, Math.max(2500, currentPrompt.syllables * 1300));
       });
-    }
-
-    function updateRecordingTimer() {
-      const elapsed = Math.floor((Date.now() - recordingStart) / 1000);
-      const target = Number(els.recordSeconds.value);
-      els.recordStatus.innerHTML = `Recording... <span class="timer">${elapsed}s</span> / ${target}s`;
     }
 
     function explainRecordingError(error) {
@@ -843,7 +837,7 @@
       }
     }
 
-    async function startRecording(autoStop) {
+    async function startRecording(autoStop, autoStopMs = null) {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         els.recordStatus.textContent = 'Microphone recording is not supported in this browser.';
         return false;
@@ -892,8 +886,16 @@
         mediaRecorder.start();
 
         recordingStart = Date.now();
-        timerInterval = setInterval(updateRecordingTimer, 250);
-        updateRecordingTimer();
+        const targetMs = autoStopMs || Number(els.recordSeconds.value) * 1000;
+
+        timerInterval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - recordingStart) / 1000);
+          const targetSeconds = Math.max(1, Math.round(targetMs / 1000));
+          els.recordStatus.innerHTML = `Recording... <span class="timer">${elapsed}s</span> / ${targetSeconds}s`;
+        }, 250);
+
+        const targetSeconds = Math.max(1, Math.round(targetMs / 1000));
+        els.recordStatus.innerHTML = `Recording... <span class="timer">0s</span> / ${targetSeconds}s`;
 
         els.recordBtn.textContent = 'Stop recording';
         els.recordBtn.className = 'danger';
@@ -902,7 +904,7 @@
         if (autoStop) {
           stopTimeout = window.setTimeout(() => {
             stopRecording();
-          }, Number(els.recordSeconds.value) * 1000);
+          }, targetMs);
         }
 
         return true;
@@ -975,18 +977,15 @@
       try {
         setStage('listen');
         els.recordStatus.innerHTML = `<strong>Listen first.</strong><br>${currentPrompt.hanzi} · ${currentPrompt.pinyin}`;
-        await speak(false);
-        if (flowCancelled) return;
 
-        const pauseMs = Number(els.pauseSeconds.value) * 1000;
-        if (pauseMs > 0) {
-          els.recordStatus.textContent = 'Get ready to repeat...';
-          await sleep(pauseMs);
-        }
+        const modelDurationMs = await speak(false);
         if (flowCancelled) return;
 
         setStage('record');
-        const started = await startRecording(true);
+        els.recordStatus.innerHTML = `<strong>Now repeat immediately.</strong><br>Recording for the same length as the model audio.`;
+
+        const recordingDurationMs = Math.max(1000, modelDurationMs);
+        const started = await startRecording(true, recordingDurationMs);
         if (!started) return;
 
         await waitForRecordingStop();
@@ -1000,7 +999,7 @@
 
         setStage('compare');
         els.recordStatus.innerHTML = `<strong>Model audio again.</strong><br>Compare your pronunciation with the prompt.`;
-        await sleep(350);
+        await sleep(250);
         await speak(false);
 
         if (!flowCancelled) {
@@ -1072,10 +1071,6 @@
       els.recordSecondsValue.textContent = `${els.recordSeconds.value}s`;
     });
 
-    els.pauseSeconds.addEventListener('input', () => {
-      els.pauseSecondsValue.textContent = `${Number(els.pauseSeconds.value).toFixed(1)}s`;
-    });
-
     els.recordBtn.addEventListener('click', async () => {
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         stopRecording();
@@ -1099,40 +1094,40 @@
     }
 
     if ('serviceWorker' in navigator) {
-  let refreshing = false;
+      let refreshing = false;
 
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (refreshing) return;
-    refreshing = true;
-    window.location.reload();
-  });
-
-  window.addEventListener('load', async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('./sw.js');
-
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-
-        if (!newWorker) return;
-
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            newWorker.postMessage({ type: 'SKIP_WAITING' });
-          }
-        });
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
       });
 
-      if (registration.waiting) {
-        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-      }
+      window.addEventListener('load', async () => {
+        try {
+          const registration = await navigator.serviceWorker.register('./sw.js');
 
-      registration.update();
-    } catch (error) {
-      console.warn('Service worker registration failed:', error);
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+
+            if (!newWorker) return;
+
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              }
+            });
+          });
+
+          if (registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+          }
+
+          registration.update();
+        } catch (error) {
+          console.warn('Service worker registration failed:', error);
+        }
+      });
     }
-  });
-}
 
     renderPrompt();
   </script>

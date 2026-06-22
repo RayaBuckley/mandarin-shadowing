@@ -1,4 +1,4 @@
-const APP_VERSION = 'mandarin-shadowing-v2';
+const APP_VERSION = 'mandarin-shadowing-v3';
 const CACHE_NAME = `cache-${APP_VERSION}`;
 
 const APP_SHELL = [

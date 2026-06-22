@@ -6,7 +6,7 @@
 
   <title>Mandarin Shadowing</title>
 
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#020617" />
   <meta name="description" content="A Mandarin shadowing practice app for listening, repeating, recording, and playback." />
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -19,17 +19,23 @@
 
   <style>
     :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --line: #e2e8f0;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --danger: #dc2626;
-      --ok: #16a34a;
-      --shadow: 0 18px 50px rgba(15, 23, 42, 0.10);
-      --radius: 22px;
+      --bg: #020617;
+      --bg-soft: #0f172a;
+      --card: rgba(15, 23, 42, 0.88);
+      --card-strong: rgba(30, 41, 59, 0.92);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --line: rgba(148, 163, 184, 0.22);
+      --primary: #60a5fa;
+      --primary-strong: #2563eb;
+      --accent: #a78bfa;
+      --danger: #fb7185;
+      --danger-strong: #e11d48;
+      --ok: #4ade80;
+      --ok-dark: #166534;
+      --warning: #facc15;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+      --radius: 26px;
     }
 
     * {
@@ -41,11 +47,14 @@
       min-height: 100vh;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at top left, #dbeafe, transparent 36rem), var(--bg);
+      background:
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.24), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(167, 139, 250, 0.18), transparent 30rem),
+        var(--bg);
     }
 
     .app {
-      width: min(920px, 100%);
+      width: min(1080px, 100%);
       margin: 0 auto;
       padding: 22px;
       padding-bottom: calc(22px + env(safe-area-inset-bottom));
@@ -53,7 +62,7 @@
 
     header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 18px;
@@ -61,44 +70,54 @@
 
     h1 {
       margin: 0;
-      font-size: clamp(1.7rem, 4vw, 2.6rem);
-      line-height: 1.05;
-      letter-spacing: -0.04em;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
     }
 
     .subhead {
-      margin: 8px 0 0;
+      margin: 9px 0 0;
       color: var(--muted);
-      font-size: 0.98rem;
+      font-size: 1rem;
     }
 
     .pill {
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.8);
-      color: var(--muted);
+      background: rgba(15, 23, 42, 0.82);
+      color: #cbd5e1;
       padding: 9px 12px;
       border-radius: 999px;
       font-size: 0.85rem;
       white-space: nowrap;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
-    .grid {
+    .main-grid {
       display: grid;
-      grid-template-columns: 1.35fr 0.65fr;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .settings-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 20px;
     }
 
-    .prompt-card {
-      min-height: 410px;
+    .prompt-card,
+    .record-card {
+      min-height: 430px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -106,28 +125,29 @@
     }
 
     .label {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 800;
+      letter-spacing: 0.1em;
+      font-weight: 900;
     }
 
     .hanzi {
-      font-size: clamp(3.8rem, 15vw, 8.2rem);
-      line-height: 1.05;
+      font-size: clamp(4.2rem, 13vw, 8.8rem);
+      line-height: 1.02;
       letter-spacing: 0.02em;
       text-align: center;
-      margin: 22px 0 6px;
-      font-weight: 700;
+      margin: 26px 0 8px;
+      font-weight: 800;
+      text-shadow: 0 0 36px rgba(96, 165, 250, 0.16);
     }
 
     .pinyin {
-      min-height: 2.6rem;
+      min-height: 2.7rem;
       text-align: center;
-      font-size: clamp(1.2rem, 4vw, 2rem);
-      color: var(--primary-dark);
-      font-weight: 750;
+      font-size: clamp(1.25rem, 4vw, 2.05rem);
+      color: #93c5fd;
+      font-weight: 800;
     }
 
     .meaning {
@@ -152,12 +172,12 @@
 
     button {
       border: none;
-      border-radius: 16px;
+      border-radius: 17px;
       padding: 14px 16px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
-      min-height: 48px;
-      transition: transform 0.08s ease, filter 0.15s ease, opacity 0.15s ease;
+      min-height: 50px;
+      transition: transform 0.08s ease, filter 0.15s ease, opacity 0.15s ease, background 0.15s ease;
       touch-action: manipulation;
     }
 
@@ -166,45 +186,101 @@
     }
 
     button:disabled {
-      opacity: 0.45;
+      opacity: 0.42;
       cursor: not-allowed;
     }
 
     .primary {
-      background: var(--primary);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
       color: white;
     }
 
-    .primary:hover {
-      filter: brightness(0.96);
-    }
-
     .secondary {
-      background: #eef2ff;
-      color: #3730a3;
+      background: rgba(96, 165, 250, 0.15);
+      color: #bfdbfe;
+      border: 1px solid rgba(96, 165, 250, 0.22);
     }
 
     .ghost {
-      background: #f1f5f9;
-      color: #334155;
+      background: rgba(148, 163, 184, 0.12);
+      color: #e2e8f0;
+      border: 1px solid rgba(148, 163, 184, 0.14);
     }
 
     .danger {
-      background: #fee2e2;
-      color: var(--danger);
+      background: rgba(251, 113, 133, 0.16);
+      color: #fecdd3;
+      border: 1px solid rgba(251, 113, 133, 0.25);
     }
 
     .recording {
-      background: var(--danger);
+      background: linear-gradient(135deg, #fb7185, #e11d48);
       color: white;
     }
 
     .success {
-      background: #dcfce7;
-      color: #166534;
+      background: rgba(74, 222, 128, 0.15);
+      color: #bbf7d0;
+      border: 1px solid rgba(74, 222, 128, 0.24);
     }
 
-    .settings {
+    .auto {
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      color: white;
+    }
+
+    .status {
+      border-radius: 18px;
+      padding: 15px;
+      background: rgba(2, 6, 23, 0.44);
+      border: 1px solid var(--line);
+      color: #cbd5e1;
+      font-size: 0.96rem;
+      min-height: 74px;
+      line-height: 1.45;
+    }
+
+    .status strong {
+      color: var(--text);
+    }
+
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-weight: 950;
+      color: #fecdd3;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stage-step {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 8px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 850;
+      background: rgba(15, 23, 42, 0.62);
+    }
+
+    .stage-step.active {
+      color: white;
+      background: rgba(96, 165, 250, 0.25);
+      border-color: rgba(96, 165, 250, 0.5);
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 12px;
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    .settings-card {
       display: grid;
       gap: 16px;
     }
@@ -216,17 +292,25 @@
 
     .setting label {
       font-size: 0.9rem;
-      font-weight: 800;
+      font-weight: 850;
+      color: #e2e8f0;
     }
 
     select {
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 15px;
       padding: 12px;
-      background: white;
+      background: rgba(2, 6, 23, 0.54);
       color: var(--text);
-      min-height: 46px;
+      min-height: 47px;
+      outline: none;
+    }
+
+    select:focus,
+    input[type="range"]:focus {
+      outline: 2px solid rgba(96, 165, 250, 0.45);
+      outline-offset: 2px;
     }
 
     .range-row {
@@ -238,16 +322,18 @@
 
     input[type="range"] {
       width: 100%;
+      accent-color: var(--primary);
     }
 
     .value-chip {
-      min-width: 3.2rem;
+      min-width: 3.4rem;
       text-align: center;
       padding: 6px 9px;
       border-radius: 999px;
-      background: #f1f5f9;
-      color: #334155;
-      font-weight: 800;
+      background: rgba(148, 163, 184, 0.14);
+      color: #e2e8f0;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
     }
 
     .toggle-row {
@@ -263,41 +349,21 @@
       border-top: none;
     }
 
+    .toggle-row label {
+      font-weight: 850;
+      color: #e2e8f0;
+    }
+
     input[type="checkbox"] {
-      width: 24px;
-      height: 24px;
-      accent-color: var(--primary);
-    }
-
-    .status {
-      border-radius: 16px;
-      padding: 13px 14px;
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.94rem;
-      min-height: 48px;
-    }
-
-    .timer {
-      font-variant-numeric: tabular-nums;
-      font-weight: 900;
-      color: var(--danger);
-    }
-
-    audio {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .history {
-      margin-top: 18px;
+      width: 25px;
+      height: 25px;
+      accent-color: var(--primary-strong);
     }
 
     .history-list {
       display: grid;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .history-item {
@@ -306,21 +372,33 @@
       gap: 10px;
       align-items: center;
       border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.38);
+      border-radius: 15px;
       padding: 10px 12px;
       font-size: 0.95rem;
     }
 
     .history-item span:first-child {
-      font-weight: 850;
+      font-weight: 900;
     }
 
     .muted {
       color: var(--muted);
     }
 
-    @media (max-width: 760px) {
+    @media (max-width: 900px) {
+      .main-grid,
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .prompt-card,
+      .record-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 620px) {
       .app {
         padding: 16px;
       }
@@ -329,21 +407,21 @@
         align-items: flex-start;
       }
 
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .prompt-card {
-        min-height: 360px;
-      }
-
       .controls,
       .record-controls {
         grid-template-columns: 1fr;
       }
 
+      .stage {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .pill {
         display: none;
+      }
+
+      .hanzi {
+        margin-top: 18px;
       }
     }
   </style>
@@ -354,12 +432,12 @@
     <header>
       <div>
         <h1>Mandarin Shadowing</h1>
-        <p class="subhead">Listen, repeat aloud, record yourself, then compare.</p>
+        <p class="subhead">Listen, repeat aloud, then compare your recording with the model audio.</p>
       </div>
-      <div class="pill">PWA ready</div>
+      <div class="pill">Dark PWA</div>
     </header>
 
-    <section class="grid">
+    <section class="main-grid">
       <article class="card prompt-card">
         <div>
           <div class="label">Current prompt</div>
@@ -376,10 +454,39 @@
         </div>
       </article>
 
-      <aside class="card settings">
+      <article class="card record-card">
         <div>
-          <div class="label">Settings</div>
+          <div class="label">Shadowing loop</div>
+          <p id="recordStatus" class="status">
+            Press <strong>Start comparison</strong> to hear the prompt, record yourself, hear your recording, then hear the prompt again.
+          </p>
+
+          <div class="stage">
+            <div id="stageListen" class="stage-step">1 Listen</div>
+            <div id="stageRecord" class="stage-step">2 Record</div>
+            <div id="stagePlayback" class="stage-step">3 Yours</div>
+            <div id="stageCompare" class="stage-step">4 Model</div>
+          </div>
+
+          <audio id="recordedAudio" controls hidden></audio>
         </div>
+
+        <div>
+          <div class="record-controls">
+            <button id="autoCompareBtn" class="auto">Start comparison</button>
+            <button id="recordBtn" class="recording">Manual record</button>
+            <button id="playRecordingBtn" class="success" disabled>Play my recording</button>
+            <button id="cancelBtn" class="danger" disabled>Cancel</button>
+          </div>
+
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="settings-grid">
+      <aside class="card settings-card">
+        <div class="label">Prompt settings</div>
 
         <div class="setting">
           <label for="syllableCount">Prompt length</label>
@@ -401,13 +508,22 @@
           </select>
         </div>
 
+        <div class="toggle-row">
+          <label for="autoPlay">Auto-play new prompts</label>
+          <input id="autoPlay" type="checkbox" checked />
+        </div>
+      </aside>
+
+      <aside class="card settings-card">
+        <div class="label">Audio settings</div>
+
         <div class="setting">
           <label for="voiceSelect">Voice</label>
           <select id="voiceSelect"></select>
         </div>
 
         <div class="setting">
-          <label for="rate">Playback speed</label>
+          <label for="rate">Normal playback speed</label>
           <div class="range-row">
             <input id="rate" type="range" min="0.55" max="1.15" step="0.05" value="0.85" />
             <span id="rateValue" class="value-chip">0.85×</span>
@@ -415,29 +531,35 @@
         </div>
 
         <div class="toggle-row">
-          <label for="autoPlay">Auto-play new prompts</label>
-          <input id="autoPlay" type="checkbox" checked />
-        </div>
-
-        <div class="toggle-row">
           <label for="showMeaning">Show meaning</label>
           <input id="showMeaning" type="checkbox" checked />
         </div>
       </aside>
-    </section>
 
-    <section class="card history">
-      <div class="label">Recording</div>
-      <p id="recordStatus" class="status">Press “Start recording”, repeat the prompt, then play your recording back.</p>
+      <aside class="card settings-card">
+        <div class="label">Comparison settings</div>
 
-      <div class="record-controls">
-        <button id="recordBtn" class="recording">Start recording</button>
-        <button id="playRecordingBtn" class="success" disabled>Play my recording</button>
-      </div>
+        <div class="toggle-row">
+          <label for="autoComparison">Auto comparison mode</label>
+          <input id="autoComparison" type="checkbox" checked />
+        </div>
 
-      <audio id="recordedAudio" controls hidden></audio>
+        <div class="setting">
+          <label for="recordSeconds">Recording length</label>
+          <div class="range-row">
+            <input id="recordSeconds" type="range" min="2" max="10" step="1" value="4" />
+            <span id="recordSecondsValue" class="value-chip">4s</span>
+          </div>
+        </div>
 
-      <div class="history-list" id="historyList"></div>
+        <div class="setting">
+          <label for="pauseSeconds">Pause before recording</label>
+          <div class="range-row">
+            <input id="pauseSeconds" type="range" min="0" max="3" step="0.5" value="0.5" />
+            <span id="pauseSecondsValue" class="value-chip">0.5s</span>
+          </div>
+        </div>
+      </aside>
     </section>
   </main>
 
@@ -507,11 +629,22 @@
       rateValue: document.getElementById('rateValue'),
       autoPlay: document.getElementById('autoPlay'),
       showMeaning: document.getElementById('showMeaning'),
+      autoComparison: document.getElementById('autoComparison'),
+      recordSeconds: document.getElementById('recordSeconds'),
+      recordSecondsValue: document.getElementById('recordSecondsValue'),
+      pauseSeconds: document.getElementById('pauseSeconds'),
+      pauseSecondsValue: document.getElementById('pauseSecondsValue'),
       recordBtn: document.getElementById('recordBtn'),
+      autoCompareBtn: document.getElementById('autoCompareBtn'),
       playRecordingBtn: document.getElementById('playRecordingBtn'),
+      cancelBtn: document.getElementById('cancelBtn'),
       recordedAudio: document.getElementById('recordedAudio'),
       recordStatus: document.getElementById('recordStatus'),
-      historyList: document.getElementById('historyList')
+      historyList: document.getElementById('historyList'),
+      stageListen: document.getElementById('stageListen'),
+      stageRecord: document.getElementById('stageRecord'),
+      stagePlayback: document.getElementById('stagePlayback'),
+      stageCompare: document.getElementById('stageCompare')
     };
 
     let currentPrompt = phraseBank[0];
@@ -522,9 +655,16 @@
     let recordingUrl = null;
     let recordingStart = 0;
     let timerInterval = null;
+    let stopTimeout = null;
+    let flowCancelled = false;
+    let currentStream = null;
 
     function randInt(max) {
       return Math.floor(Math.random() * max);
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => window.setTimeout(resolve, ms));
     }
 
     function shuffle(array) {
@@ -567,12 +707,35 @@
     }
 
     function newPrompt() {
+      cancelFlow();
       currentPrompt = pickPrompt();
       renderPrompt();
 
       if (els.autoPlay.checked) {
         window.setTimeout(() => speak(false), 150);
       }
+    }
+
+    function setStage(stage) {
+      const stages = {
+        listen: els.stageListen,
+        record: els.stageRecord,
+        playback: els.stagePlayback,
+        compare: els.stageCompare
+      };
+
+      Object.values(stages).forEach(el => el.classList.remove('active'));
+
+      if (stages[stage]) {
+        stages[stage].classList.add('active');
+      }
+    }
+
+    function setBusy(isBusy) {
+      els.autoCompareBtn.disabled = isBusy;
+      els.newBtn.disabled = isBusy;
+      els.recordBtn.disabled = isBusy;
+      els.cancelBtn.disabled = !isBusy;
     }
 
     function loadVoices() {
@@ -615,25 +778,42 @@
     }
 
     function speak(slow) {
-      if (!('speechSynthesis' in window)) {
-        els.recordStatus.textContent = 'This browser does not support text-to-speech. Try Safari, Chrome, or Edge.';
-        return;
-      }
+      return new Promise(resolve => {
+        if (!('speechSynthesis' in window)) {
+          els.recordStatus.textContent = 'This browser does not support text-to-speech. Try Safari, Chrome, or Edge.';
+          resolve();
+          return;
+        }
 
-      speechSynthesis.cancel();
+        speechSynthesis.cancel();
 
-      const utterance = new SpeechSynthesisUtterance(currentPrompt.hanzi);
-      utterance.lang = 'zh-CN';
-      utterance.rate = slow ? 0.55 : Number(els.rate.value);
-      utterance.pitch = 1;
-      utterance.voice = selectedVoice();
+        const utterance = new SpeechSynthesisUtterance(currentPrompt.hanzi);
+        utterance.lang = 'zh-CN';
+        utterance.rate = slow ? 0.55 : Number(els.rate.value);
+        utterance.pitch = 1;
+        utterance.voice = selectedVoice();
 
-      speechSynthesis.speak(utterance);
+        let resolved = false;
+
+        const finish = () => {
+          if (resolved) return;
+          resolved = true;
+          resolve();
+        };
+
+        utterance.onend = finish;
+        utterance.onerror = finish;
+
+        speechSynthesis.speak(utterance);
+
+        window.setTimeout(finish, Math.max(2500, currentPrompt.syllables * 1200));
+      });
     }
 
     function updateRecordingTimer() {
       const elapsed = Math.floor((Date.now() - recordingStart) / 1000);
-      els.recordStatus.innerHTML = `Recording... <span class="timer">${elapsed}s</span>`;
+      const target = Number(els.recordSeconds.value);
+      els.recordStatus.innerHTML = `Recording... <span class="timer">${elapsed}s</span> / ${target}s`;
     }
 
     function explainRecordingError(error) {
@@ -656,14 +836,22 @@
       return 'Microphone permission was blocked or unavailable.';
     }
 
-    async function startRecording() {
+    function stopStream() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+      }
+    }
+
+    async function startRecording(autoStop) {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         els.recordStatus.textContent = 'Microphone recording is not supported in this browser.';
-        return;
+        return false;
       }
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        currentStream = stream;
         recordedChunks = [];
 
         mediaRecorder = new MediaRecorder(stream);
@@ -675,7 +863,7 @@
         };
 
         mediaRecorder.onstop = () => {
-          stream.getTracks().forEach(track => track.stop());
+          stopStream();
 
           const blob = new Blob(recordedChunks, {
             type: mediaRecorder.mimeType || 'audio/webm'
@@ -689,10 +877,11 @@
           els.recordedAudio.src = recordingUrl;
           els.recordedAudio.hidden = false;
           els.playRecordingBtn.disabled = false;
-          els.recordBtn.textContent = 'Start recording';
+          els.recordBtn.textContent = 'Manual record';
           els.recordBtn.className = 'recording';
 
           clearInterval(timerInterval);
+          clearTimeout(stopTimeout);
 
           els.recordStatus.textContent =
             `Saved recording for: ${currentPrompt.hanzi} (${currentPrompt.pinyin})`;
@@ -709,8 +898,17 @@
         els.recordBtn.textContent = 'Stop recording';
         els.recordBtn.className = 'danger';
         els.playRecordingBtn.disabled = true;
+
+        if (autoStop) {
+          stopTimeout = window.setTimeout(() => {
+            stopRecording();
+          }, Number(els.recordSeconds.value) * 1000);
+        }
+
+        return true;
       } catch (error) {
         els.recordStatus.textContent = explainRecordingError(error);
+        return false;
       }
     }
 
@@ -718,6 +916,123 @@
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         mediaRecorder.stop();
       }
+    }
+
+    function waitForRecordingStop() {
+      return new Promise(resolve => {
+        if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+          resolve();
+          return;
+        }
+
+        const originalOnStop = mediaRecorder.onstop;
+
+        mediaRecorder.onstop = event => {
+          if (originalOnStop) {
+            originalOnStop(event);
+          }
+          resolve();
+        };
+      });
+    }
+
+    function playRecordedAudio() {
+      return new Promise(resolve => {
+        if (!recordingUrl) {
+          resolve();
+          return;
+        }
+
+        els.recordedAudio.currentTime = 0;
+
+        const finish = () => {
+          els.recordedAudio.removeEventListener('ended', finish);
+          els.recordedAudio.removeEventListener('error', finish);
+          resolve();
+        };
+
+        els.recordedAudio.addEventListener('ended', finish);
+        els.recordedAudio.addEventListener('error', finish);
+
+        const playPromise = els.recordedAudio.play();
+
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => resolve());
+        }
+      });
+    }
+
+    async function runAutoComparison() {
+      if (!els.autoComparison.checked) {
+        await startRecording(false);
+        return;
+      }
+
+      cancelFlow();
+      flowCancelled = false;
+      setBusy(true);
+
+      try {
+        setStage('listen');
+        els.recordStatus.innerHTML = `<strong>Listen first.</strong><br>${currentPrompt.hanzi} · ${currentPrompt.pinyin}`;
+        await speak(false);
+        if (flowCancelled) return;
+
+        const pauseMs = Number(els.pauseSeconds.value) * 1000;
+        if (pauseMs > 0) {
+          els.recordStatus.textContent = 'Get ready to repeat...';
+          await sleep(pauseMs);
+        }
+        if (flowCancelled) return;
+
+        setStage('record');
+        const started = await startRecording(true);
+        if (!started) return;
+
+        await waitForRecordingStop();
+        if (flowCancelled) return;
+
+        setStage('playback');
+        els.recordStatus.innerHTML = `<strong>Your recording.</strong><br>Listen for tones, rhythm, and initials/finals.`;
+        await sleep(300);
+        await playRecordedAudio();
+        if (flowCancelled) return;
+
+        setStage('compare');
+        els.recordStatus.innerHTML = `<strong>Model audio again.</strong><br>Compare your pronunciation with the prompt.`;
+        await sleep(350);
+        await speak(false);
+
+        if (!flowCancelled) {
+          setStage(null);
+          els.recordStatus.innerHTML = `<strong>Comparison complete.</strong><br>Press “New prompt” or “Start comparison” again.`;
+        }
+      } finally {
+        if (!flowCancelled) {
+          setBusy(false);
+        }
+      }
+    }
+
+    function cancelFlow() {
+      flowCancelled = true;
+      clearInterval(timerInterval);
+      clearTimeout(stopTimeout);
+
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+      }
+
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+
+      els.recordedAudio.pause();
+      stopStream();
+      setStage(null);
+      setBusy(false);
+      els.recordBtn.textContent = 'Manual record';
+      els.recordBtn.className = 'recording';
     }
 
     function addHistoryItem(prompt) {
@@ -734,6 +1049,11 @@
     els.playBtn.addEventListener('click', () => speak(false));
     els.slowBtn.addEventListener('click', () => speak(true));
     els.newBtn.addEventListener('click', newPrompt);
+    els.autoCompareBtn.addEventListener('click', runAutoComparison);
+    els.cancelBtn.addEventListener('click', () => {
+      cancelFlow();
+      els.recordStatus.textContent = 'Cancelled. Press “Start comparison” to try again.';
+    });
 
     els.revealBtn.addEventListener('click', () => {
       showPinyin = !showPinyin;
@@ -748,17 +1068,24 @@
       els.rateValue.textContent = `${Number(els.rate.value).toFixed(2)}×`;
     });
 
-    els.recordBtn.addEventListener('click', () => {
+    els.recordSeconds.addEventListener('input', () => {
+      els.recordSecondsValue.textContent = `${els.recordSeconds.value}s`;
+    });
+
+    els.pauseSeconds.addEventListener('input', () => {
+      els.pauseSecondsValue.textContent = `${Number(els.pauseSeconds.value).toFixed(1)}s`;
+    });
+
+    els.recordBtn.addEventListener('click', async () => {
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         stopRecording();
       } else {
-        startRecording();
+        await startRecording(false);
       }
     });
 
     els.playRecordingBtn.addEventListener('click', () => {
-      els.recordedAudio.currentTime = 0;
-      els.recordedAudio.play();
+      playRecordedAudio();
     });
 
     if ('speechSynthesis' in window) {
